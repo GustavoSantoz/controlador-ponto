@@ -1,35 +1,55 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button } from 'react-native';
 
-export default function App() {
+const App = () => {
+  const [hora, setHora] = useState('00:00');
+  const [intervalo, setIntervalo] = useState('00:00');
+  const [result, setResult] = useState('00:00');
+
+  const somarHoras = (hora1, hora2) => {
+    const [h1, m1] = hora1.split(':').map(Number);
+    const [h2, m2] = hora2.split(':').map(Number);
+
+    let minutosTotais = m1 + m2;
+    let horasTotais = h1 + h2;
+
+    if (minutosTotais >= 60) {
+      minutosTotais -= 60;
+      horasTotais += 1;
+    }
+
+    return `${String(horasTotais).padStart(2, '0')}:${String(minutosTotais).padStart(2, '0')}`;
+  };
+
   return (
-    <View style={styles.container}>
-      <TextInput
-      style={styles.input}
-      />
-      <Text style={styles.total}>O total é:</Text>
-      <StatusBar style="auto" />
+    <View>
+      <View>
+        <Text>Coloque seu horário.</Text>
+        <TextInput
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+          keyboardType="numeric"
+          placeholder="Horário A"
+          value={hora}
+          onChangeText={(text) => setHora(text)}
+        />
+        <TextInput
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+          keyboardType="numeric"
+          placeholder="Horário B"
+          value={intervalo}
+          onChangeText={(text) => setIntervalo(text)}
+        />
+        <Button
+          title="Submit"
+          onPress={() => setResult(somarHoras(hora, intervalo))}
+        />
+      </View>
+      <View>
+        <Text>Resultado:</Text>
+        <Text>{result}</Text>
+      </View>
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#74b816',
-    fontSize: '5em',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  total: {
-    fontSize: 30,
-  },
-
-  input: {
-    height: 30,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});
+export default App;
